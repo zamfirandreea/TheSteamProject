@@ -24,12 +24,6 @@
     margin: 20px 0;
 }
 
-input[type="text"] {
-    padding-left: 10px;
-    height: 25px;
-    min-width: 200px;
-}
-
 .profile_picture {
     border: 2px solid #53a4c4;
     margin: 0 35px;

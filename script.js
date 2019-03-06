@@ -1,11 +1,8 @@
-// const axios = require('axios');
-// import axios from 'axios';
 
 const steamKey = '0DB8EC376B48E0736AB221887E5C7B6D';
-let steamProfileId = '76561198118730252';
+const steamProfileId = '76561198118730252';
 const header = document.getElementsByClassName('header')[0];
 const content = document.getElementsByClassName('left_side')[0];
-const aside = document.getElementsByClassName('aside')[0];
 
 
 async function getResponseProfileDetails() {
@@ -14,7 +11,6 @@ async function getResponseProfileDetails() {
         const levelRes = await axios.get('http://localhost:8081/IPlayerService/GetSteamLevel/v1/?key=' + steamKey + '&steamid=' + steamProfileId);
         const recentlyPlayedRes = await axios.get('http://localhost:8081/IPlayerService/GetRecentlyPlayedGames/v0001/?key=' + steamKey + '&steamid=' + steamProfileId + '&format=json');
         const ownedGamesRes = await axios.get('http://localhost:8081/IPlayerService/GetOwnedGames/v0001/?key=' + steamKey + '&steamid=' + steamProfileId + '&format=json&include_appinfo=1&include_&include_played_free_games=1');
-        // const friendsRes = await axios.get('http://localhost:8081/ISteamUser/GetFriendList/v0001/?key=' + steamKey + '&steamid=' + steamProfileId + '&relationship=friend');
 
         getProfilePicture(profileDetailsRes.data);
         getProfileName(profileDetailsRes.data);
@@ -27,7 +23,7 @@ async function getResponseProfileDetails() {
     }
 }
 
-// getResponseProfileDetails();
+getResponseProfileDetails();
 
 const getProfilePicture = (res) => {
     const imgSection = document.createElement('section');
@@ -141,32 +137,4 @@ const sec2time = (timeInSeconds) => {
 //     aside.appendChild(friendSection);
 // };
 
-const getSteamProfileID = () => {
-    const steamId = document.createElement('input');
-    steamId.id = 'steam_id';
-    steamId.type = 'text';
-    steamId.placeholder = 'Enter Steam ID here...';
-    steamId.defaultValue = '76561198118730252';
-    document.getElementsByClassName('steam_profile_id')[0].appendChild(steamId);
-    // steamProfileId = steamId.value;
-    return steamId;
-};
-
-const submitButton = () => {
-    const button = document.createElement('button');
-    button.className = 'submit_btn';
-    button.innerHTML = 'Submit';
-    button.onclick = onClick;
-    document.getElementsByClassName('steam_profile_id')[0].appendChild(button);
-};
-
-const onClick = () => {
-    console.log('button Clicked!');
-    const steamId = document.getElementById('steam_id');
-    console.log(steamId.value);
-    getResponseProfileDetails();
-
-};
-submitButton();
-console.log(getSteamProfileID());
 
