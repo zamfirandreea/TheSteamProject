@@ -6,6 +6,8 @@ Try to do a steam profile page with the following:
 - display game list owned (top 10 played cause it's a long list)
 - display recent activity (last game played)
 - display picture, name and playtime at each game
+- display friend list (name and level for each friend) (TODO)
+- make it so you can see other players profile (TODO)
 
 https://steamcommunity.com/dev
 
