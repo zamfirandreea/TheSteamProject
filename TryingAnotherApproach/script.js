@@ -33,7 +33,7 @@ const getProfileAvatarData = async (steamProfileId) => {
     const response = await axios.get('http://localhost:8081/ISteamUser/GetPlayerSummaries/v0002/?key=' + steamKey + '&steamids=' + steamProfileId);
     // console.log(response.data.response.players[0].avatarfull);
     return response.data.response.players[0].avatarfull;
-}
+};
 
 const updateProfileAvatar = (avatarData) => {
     const avatar = document.getElementsByClassName('profile_picture')[0];
@@ -79,9 +79,9 @@ const updateProfileName = (nameData) => {
 };
 
 const getProfileLevel = async (steamId) => {
-  initProfileLevel();
-  const profileLevel = await getProfileLevelData(steamId);
-  updateProfileLevel(profileLevel);
+  let profileLevel = initProfileLevel();
+  const data = await getProfileLevelData(steamId);
+  updateProfileLevel(profileLevel, data);
 };
 
 const createProfileLevel = () => {
@@ -89,11 +89,15 @@ const createProfileLevel = () => {
   const level = document.createElement('p');
   level.className = 'profile_level';
   detailsSection.appendChild(level);
-  header.appendChild(detailsSection);
+  return level;
 };
 
 const findProfileLevel = () => {
-    return document.getElementsByClassName('level');
+    const foundElements = document.getElementsByClassName('profile_level');
+    if(foundElements && foundElements.length>0){
+        return foundElements[0];
+    }
+    return null;
 };
 
 const initProfileLevel = () => {
@@ -107,10 +111,8 @@ const getProfileLevelData = async (steamProfileId) => {
     return 'Level ' + response.data.response.player_level;
 };
 
-const updateProfileLevel = (levelData) => {
-    const level = document.getElementsByClassName('profile_level')[0];
+const updateProfileLevel = (level, levelData) => {
     level.innerHTML = levelData;
-    console.log(level.innerHTML);
 };
 
 const getRecentPlayedGame = async (steamId) => {
@@ -230,9 +232,9 @@ async function getResponseProfileDetails() {
         getProfileAvatar(steamProfileId);
         getProfileName(steamProfileId);
         getProfileLevel(steamProfileId);
-        getRecentPlayedGame(steamProfileId);
-        getRecentPlayedGame(steamProfileId);
-        getOwnedGames(steamProfileId);
+        // getRecentPlayedGame(steamProfileId);
+        // getRecentPlayedGame(steamProfileId);
+        // getOwnedGames(steamProfileId);
     } catch (error) {
         console.error(error);
     }
