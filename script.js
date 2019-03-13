@@ -1,124 +1,85 @@
 const steamKey = '0DB8EC376B48E0736AB221887E5C7B6D';
 let steamProfileId = '76561198118730252';
+
 const header = document.getElementsByClassName('header')[0];
 const leftSection = document.getElementsByClassName('left_side')[0];
 
-const getProfileAvatar = async (steamId) => {
-    initProfileAvatar();
-    const profileAvatar = await getProfileAvatarData(steamId);
-    updateProfileAvatar(profileAvatar);
-    // console.log(profileAvatar);
+// Owned Games
+const displayOwnedGames = async (steamProfileId) => {
+    if(!existsOwnedGamesElem()) {
+        createOwnedGames();
+    }
+    const data = await getOwnedGamesData(steamProfileId);
+    updateOwnedGames(data);
 };
 
-const createProfileAvatar = () => {
-    const imgSection = document.createElement('section');
-    imgSection.className = 'image_section';
-    const avatar = document.createElement('img');
-    avatar.className = 'profile_picture';
-    imgSection.appendChild(avatar);
-    header.appendChild(imgSection);
-    return imgSection;
+const createOwnedGames = () => {
+    const ownedGameSection = document.createElement('section');
+    const header = document.createElement('h2');
+    ownedGameSection.className = 'owned_games';
+    header.className = 'owned_games_header';
+    header.innerHTML = 'Owned Games (Top 10 most played)';
+    ownedGameSection.appendChild(header);
+    leftSection.appendChild(ownedGameSection);
 };
 
-const findProfileAvatar = () => {
-    return document.getElementsByClassName('image_section')[0];
+const existsOwnedGamesElem = () => {
+    const foundElements = document.getElementsByClassName('owned_games');
+    if(foundElements && foundElements.length > 0){
+        return !!foundElements[0];
+    }
+    return false;
 };
 
-const initProfileAvatar = () => {
-    // console.log(createProfileAvatar());
-    return findProfileAvatar() || createProfileAvatar();
+const getOwnedGamesData = async (steamProfileId) => {
+    const response = await axios.get('http://localhost:8081/IPlayerService/GetOwnedGames/v0001/?key=' + steamKey + '&steamid=' + steamProfileId + '&format=json&include_appinfo=1&include_&include_played_free_games=1');
+    const ownedGames = response.data.response.games;
+    ownedGames.sort((game01, game02) => game02.playtime_forever - game01.playtime_forever);
+    return ownedGames.slice(0,10);
 };
 
-const getProfileAvatarData = async (steamProfileId) => {
-    const response = await axios.get('http://localhost:8081/ISteamUser/GetPlayerSummaries/v0002/?key=' + steamKey + '&steamids=' + steamProfileId);
-    // console.log(response.data.response.players[0].avatarfull);
-    return response.data.response.players[0].avatarfull;
+
+const updateOwnedGames = (games) => {
+    const section = document.getElementsByClassName('owned_games')[0];
+    games.forEach(game => createOwnedGame(section, game));
 };
 
-const updateProfileAvatar = (avatarData) => {
-    const avatar = document.getElementsByClassName('profile_picture')[0];
-    avatar.src = avatarData;
-    // console.log(avatar.src);
+const createOwnedGame = (section, game) => {
+    const gameSection = document.createElement('section');
+    gameSection.className = 'game_section';
+    const gameImage = document.createElement('img');
+    const gameName = document.createElement('p');
+    const gamePlaytime = document.createElement('p');
+    gameImage.className = 'game_image';
+    gameName.className = 'game_name';
+    gamePlaytime.className = 'game_playtime';
+
+    gameImage.src = 'http://media.steampowered.com/steamcommunity/public/images/apps/' + game.appid + '/' + game.img_logo_url + '.jpg';
+    gameName.innerHTML = game.name;
+    gamePlaytime.innerHTML = 'Total playtime: ' + sec2time(game.playtime_forever);
+
+    gameSection.appendChild(gameImage);
+    gameSection.appendChild(gameName);
+    gameSection.appendChild(gamePlaytime);
+    section.appendChild(gameSection);
 };
 
-const getProfileName = async (steamId) => {
-    initProfileName();
-    const profileName = await getProfileNameData(steamId);
-    updateProfileName(profileName);
+
+// Recent Game
+const displayRecentGame = async (steamProfileId) => {
+    if(!existsRecentPlayedGameElem()){
+        createRecentPlayedGame();
+    }
+    const data = await getRecentPlayedGameData(steamProfileId);
+    updateRecentPlayedGame(data);
 };
 
-const createProfileName = () => {
-    const detailsSection = document.createElement('section');
-    detailsSection.className = 'details_section';
-    const name = document.createElement('p');
-    name.className = 'profile_name';
-    detailsSection.appendChild(name);
-    header.appendChild(detailsSection);
-    return detailsSection;
-};
-
-const findProfileName = () => {
-    return document.getElementsByClassName('profile_name')[0];
-};
-
-const initProfileName = () => {
-    // console.log(createProfileName());
-    return findProfileName() || createProfileName();
-};
-
-const getProfileNameData = async (steamProfileId) => {
-    const response = await axios.get('http://localhost:8081/ISteamUser/GetPlayerSummaries/v0002/?key=' + steamKey + '&steamids=' + steamProfileId);
-    // console.log(response.data.response.players[0].personaname);
-    return response.data.response.players[0].personaname;
-};
-
-const updateProfileName = (nameData) => {
-    const name = document.getElementsByClassName('profile_name')[0];
-    name.innerHTML = nameData;
-    // console.log(name.innerHTML);
-};
-
-const getProfileLevel = async (steamId) => {
-    const profileLevel = initProfileLevel();
-    const data = await getProfileLevelData(steamId);
-    updateProfileLevel(profileLevel, data);
-};
-
-const createProfileLevel = () => {
-    const detailsSection = document.getElementsByClassName('details_section')[0];
-    const level = document.createElement('p');
-    level.className = 'profile_level';
-    detailsSection.appendChild(level);
-    return level;
-};
-
-const findProfileLevel = () => {
-    const foundElements = document.getElementsByClassName('profile_level');
+const existsRecentPlayedGameElem = () => {
+    const foundElements = document.getElementsByClassName('recent_game');
     if(foundElements && foundElements.length>0){
-        return foundElements[0];
+        return !!foundElements[0];
     }
     return null;
-};
-
-const initProfileLevel = () => {
-    // console.log(createProfileLevel());
-    return findProfileLevel() || createProfileLevel();
-};
-
-const getProfileLevelData = async (steamProfileId) => {
-    const response = await axios.get('http://localhost:8081/IPlayerService/GetSteamLevel/v1/?key=' + steamKey + '&steamid=' + steamProfileId);
-    // console.log(response.data.response.player_level);
-    return 'Level ' + response.data.response.player_level;
-};
-
-const updateProfileLevel = (level, levelData) => {
-    level.innerHTML = levelData;
-};
-
-const getRecentPlayedGame = async (steamId) => {
-    const game =  initRecentPlayedGame();
-    const data = await getRecentPlayedGameData(steamId);
-    updateRecentPlayedGame(game, data);
 };
 
 const createRecentPlayedGame = () => {
@@ -139,19 +100,6 @@ const createRecentPlayedGame = () => {
     section.appendChild(gameImage);
     section.appendChild(gameName);
     section.appendChild(gamePlaytime);
-    return section;
-};
-
-const findRecentPlayedGame = () => {
-    const foundElements = document.getElementsByClassName('recent_game');
-    if(foundElements && foundElements.length>0){
-        return foundElements[0];
-    }
-    return null;
-};
-
-const initRecentPlayedGame = () => {
-    return findRecentPlayedGame() || createRecentPlayedGame();
 };
 
 const getRecentPlayedGameData = async (steamProfileId) => {
@@ -160,7 +108,7 @@ const getRecentPlayedGameData = async (steamProfileId) => {
     return response.data.response.games[0];
 };
 
-const updateRecentPlayedGame = (game, gameData) => {
+const updateRecentPlayedGame = (gameData) => {
     const gameImage = document.getElementsByClassName('game_image')[0];
     const gameName = document.getElementsByClassName('game_name')[0];
     const gamePlaytime = document.getElementsByClassName('game_playtime')[0];
@@ -170,6 +118,78 @@ const updateRecentPlayedGame = (game, gameData) => {
     gamePlaytime.innerHTML = 'Total playtime: ' + sec2time(gameData.playtime_forever);
 };
 
+// Header
+const displayUserHeader = async (steamProfileId) => {
+    const userData =  await getProfileData(steamProfileId);
+    userData.level = await getProfileLevelData(steamProfileId);
+    console.log(userData);
+    if(isHeaderEmpty()) {
+        createUserHeader();
+    }
+    setHeaderData(userData);
+};
+
+const getProfileData = async (steamProfileId) => {
+    const response = await axios.get('http://localhost:8081/ISteamUser/GetPlayerSummaries/v0002/?key=' + steamKey + '&steamids=' + steamProfileId);
+    // console.log(response.data.response.players[0].avatarfull);
+    const {avatarfull, personaname} = response.data.response.players[0];
+    return {avatarfull, personaname};
+};
+
+const getProfileLevelData = async (steamProfileId) => {
+    const response = await axios.get('http://localhost:8081/IPlayerService/GetSteamLevel/v1/?key=' + steamKey + '&steamid=' + steamProfileId);
+    // console.log(response.data.response.player_level);
+    return response.data.response.player_level;
+};
+
+const isHeaderEmpty = () => {
+
+    return !header.children.length;
+};
+
+const setHeaderData = (userData) => {
+    const {avatarfull, personaname, level} = userData;
+    const avatarElem = document.getElementsByClassName('profile_picture')[0];
+    const nameElem = document.getElementsByClassName('profile_name')[0];
+    const levelElem = document.getElementsByClassName('profile_level')[0];
+
+    avatarElem.src = avatarfull;
+    nameElem.innerHTML = personaname;
+    levelElem.innerHTML = `Level: ${level}`;
+};
+
+const createUserHeader = () => {
+    const imgSection = document.createElement('section');
+    imgSection.className = 'image_section';
+    const avatar = document.createElement('img');
+    avatar.className = 'profile_picture';
+    imgSection.appendChild(avatar);
+    header.appendChild(imgSection);
+
+    const detailsSection = document.createElement('section');
+    detailsSection.className = 'details_section';
+    const name = document.createElement('p');
+    name.className = 'profile_name';
+    detailsSection.appendChild(name);
+    header.appendChild(detailsSection);
+
+    const level = document.createElement('p');
+    level.className = 'profile_level';
+    detailsSection.appendChild(level);
+};
+
+async function getResponseProfileDetails() {
+    try {
+        displayUserHeader(steamProfileId);
+        displayRecentGame(steamProfileId);
+        displayOwnedGames(steamProfileId);
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Usefull
 const sec2time = (timeInSeconds) => {
     const pad = (num, size) => ('000' + num).slice(size * -1),
         time = parseFloat(timeInSeconds).toFixed(3),
@@ -180,72 +200,5 @@ const sec2time = (timeInSeconds) => {
     return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
 };
 
-const getOwnedGames = async (steamId) => {
-    const game = initOwnedGames();
-    const gameData = await getOwnedGamesData(steamId);
-    updateOwnedGames(game, gameData);
-};
-
-const createOwnedGames = () => {
-    const section = document.createElement('section');
-    section.className = 'owned_games';
-    const header = document.createElement('h2');
-    header.className = 'section_header';
-    header.innerHTML = 'Owned Games (Top 10 Played)';
-    section.appendChild(header);
-
-    const gameImage = document.createElement('img');
-    gameImage.className = 'owned_game_image';
-    const gameName = document.createElement('p');
-    gameName.className = 'owned_game_name';
-    const gamePlaytime = document.createElement('p');
-    gamePlaytime.className = 'owned_game_playtime';
-    section.appendChild(gameImage);
-    section.appendChild(gameName);
-    section.appendChild(gamePlaytime);
-    return section;
-};
-
-const findOwnedGames = () => {
-    const foundElements =  document.getElementsByClassName('owned_games')[0];
-    if(foundElements && foundElements.length>0){
-        return foundElements[0];
-    }
-    return null;
-};
-
-const initOwnedGames =() => {
-    return findOwnedGames() || createOwnedGames();
-};
-
-const getOwnedGamesData = async (steamProfileId) => {
-    const response = await axios.get('http://localhost:8081/IPlayerService/GetOwnedGames/v0001/?key=' + steamKey + '&steamid=' + steamProfileId + '&format=json&include_appinfo=1&include_&include_played_free_games=1');
-    const ownedGames = response.data.response.games;
-    ownedGames.sort((game01, game02) => game02.playtime_forever - game01.playtime_forever);
-    return ownedGames.slice(0,10);
-};
-
-const updateOwnedGames = (game, gameData) => {
-    const gameImage = document.getElementsByClassName('owned_game_image');
-    const gameName = document.getElementsByClassName('owned_game_name');
-    const gamePlaytime = document.getElementsByClassName('owned_game_playtime');
-
-    gameImage.src = 'http://media.steampowered.com/steamcommunity/public/images/apps/' + gameData.appid + '/' + gameData.img_logo_url + '.jpg';
-    gameName.innerHTML = gameData.name;
-    console.log(gameName.innerHTML);
-    gamePlaytime.innerHTML = 'Total Playtime: ' + sec2time(gameData.playtime_forever);
-};
-
-async function getResponseProfileDetails() {
-    try {
-        getProfileAvatar(steamProfileId);
-        getProfileName(steamProfileId);
-        getProfileLevel(steamProfileId);
-        getRecentPlayedGame(steamProfileId);
-        getOwnedGames(steamProfileId);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
+// Start function
 getResponseProfileDetails();
