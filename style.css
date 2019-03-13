@@ -80,9 +80,3 @@
 .left_side {
     width: 70%;
 }
-
-.steam_id_field {
-    display: flex;
-    justify-content: center;
-    margin: 35px 0;
-}

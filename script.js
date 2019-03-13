@@ -125,44 +125,16 @@ const sec2time = (timeInSeconds) => {
     return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
 };
 
-const getFriendsList = (res, profileDetailsRes) => {
-    const friendSection = document.createElement('section');
-    const header = document.createElement('h2');
-    friendSection.className = 'friend_section';
-    header.className = 'friends_header';
+// const getFriendsList = (res, profileDetailsRes) => {
+//     const friendSection = document.createElement('section');
+//     const header = document.createElement('h2');
+//     friendSection.className = 'friend_section';
+//     header.className = 'friends_header';
+//
+//     header.innerHTML = 'Friends';
+//
+//     friendSection.appendChild(header);
+//     aside.appendChild(friendSection);
+// };
 
-    header.innerHTML = 'Friends';
-
-    friendSection.appendChild(header);
-    aside.appendChild(friendSection);
-};
-
-const createSteamIdInput = () => {
-  const idInput = document.createElement('input');
-  idInput.type = 'text';
-  idInput.id = 'id_input';
-  idInput.defaultValue = '76561198118730252';
-  document.getElementsByClassName('steam_id_field')[0].appendChild(idInput);
-  console.log(idInput.value);
-};
-
-const submitButton = () => {
-    const button = document.createElement('button');
-    button.className = 'submit_btn';
-    button.innerHTML = 'Submit';
-    button.onclick = onClick;
-    document.getElementsByClassName('steam_id_field')[0].appendChild(button);
-};
-
-const onClick = () => {
-    console.log('button Clicked!');
-    const urlInput = document.getElementById('id_input');
-    const container = document.getElementsByClassName('container')[0];
-    container.innerHTML = '';
-    console.log(urlInput.value);
-
-};
-
-createSteamIdInput();
-submitButton();
 
