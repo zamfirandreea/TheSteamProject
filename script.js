@@ -2,7 +2,7 @@
 const steamKey = '0DB8EC376B48E0736AB221887E5C7B6D';
 const steamProfileId = '76561198118730252';
 const header = document.getElementsByClassName('header')[0];
-const content = document.getElementsByClassName('left_side')[0];
+const content = document.getElementsByClassName('content')[0];
 
 
 async function getResponseProfileDetails() {
@@ -17,7 +17,6 @@ async function getResponseProfileDetails() {
         getProfileLevel(levelRes.data);
         getRecentlyPlayedGame(recentlyPlayedRes.data);
         getOwnedGames(ownedGamesRes.data);
-        // getFriendsList(friendsRes.data);
     } catch (error) {
         console.error(error);
     }
@@ -124,17 +123,4 @@ const sec2time = (timeInSeconds) => {
 
     return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
 };
-
-// const getFriendsList = (res, profileDetailsRes) => {
-//     const friendSection = document.createElement('section');
-//     const header = document.createElement('h2');
-//     friendSection.className = 'friend_section';
-//     header.className = 'friends_header';
-//
-//     header.innerHTML = 'Friends';
-//
-//     friendSection.appendChild(header);
-//     aside.appendChild(friendSection);
-// };
-
 
