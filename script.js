@@ -1,3 +1,5 @@
+const steamKey = '0DB8EC376B48E0736AB221887E5C7B6D';
+let steamProfileId = '76561198118730252';
 
 const steamKey = '0DB8EC376B48E0736AB221887E5C7B6D';
 const steamProfileId = '76561198118730252';
@@ -123,4 +125,3 @@ const sec2time = (timeInSeconds) => {
 
     return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
 };
-

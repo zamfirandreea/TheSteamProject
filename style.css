@@ -59,11 +59,11 @@
     margin-right: 20px;
     border: 1px solid #fff;
 }
-.owned_games_section {
+.owned_games {
     display: flex;
     flex-direction: column;
     clear: both;
 }
-.owned_games_section .game_image {
+.owned_games .game_image {
     margin-top: 10px;
 }
