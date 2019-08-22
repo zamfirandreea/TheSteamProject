@@ -189,13 +189,13 @@ async function getResponseProfileDetails() {
 }
 
 const sec2time = (timeInSeconds) => {
-    const pad = (num, size) => ('000' + num).slice(size * -1),
-        time = parseFloat(timeInSeconds).toFixed(3),
-        hours = Math.floor(time / 60 / 60),
-        minutes = Math.floor(time / 60) % 60,
-        seconds = Math.floor(time - minutes * 60);
+    const pad = (num, size) => ('000' + num).slice(size * -1);
+    const timeInMinutes = parseFloat(timeInSeconds).toFixed(3);
+    days = Math.floor(timeInMinutes / 60 / 24);
+    hours = Math.floor(timeInMinutes / 60 % 24);
+    minutes = Math.floor(timeInMinutes % 60);
 
-    return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+    return pad(days, 2) + ' ' + pad(hours, 2) + ':' + pad(minutes, 2);
 };
 
 // Start function
